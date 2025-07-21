@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: intelligent-project
+  labels:
+    app: intelligent-project
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: intelligent-project
+  template:
+    metadata:
+      labels:
+        app: intelligent-project
+    spec:
+      containers:
+      - name: intelligent-project
+        image: intelligent-project:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "kubernetes"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres:5432/intelligentproject"
+        - name: SPRING_DATASOURCE_USERNAME
+          value: "intelligentproject"
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
